@@ -1,6 +1,9 @@
 # VSCode setting
 .vscode
 
+# PEM file
+config/masterprotectionbot.pem
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
