@@ -5,5 +5,5 @@
 azure-functions
 requests
 jsonschema
-pyjwt
+jwt
 
