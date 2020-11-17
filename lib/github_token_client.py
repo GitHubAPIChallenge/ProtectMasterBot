@@ -3,15 +3,17 @@ import jwt
 import json
 import requests
 from datetime import timedelta, datetime
-from cryptography.hazmat.backends import default_backend
 
 class GitHubTokenClient:
     def __init__(self, app_id, app_pem, installation_id):
         self.app_id = app_id
         self.app_pem = app_pem
-        self.cert_bytes = app_pem.encode()
-        self.private_key = default_backend().load_pem_private_key(self.cert_bytes, None)
+        self.private_key = app_pem.encode()
         self.installation_id = installation_id
+
+        # from cryptography.hazmat.backends import default_backend
+        # self.cert_bytes = app_pem.encode()
+        # self.private_key = default_backend().load_pem_private_key(self.cert_bytes, None)
 
     def generate_jwt_token(self):
         alg = 'RS256'
