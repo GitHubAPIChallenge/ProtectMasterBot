@@ -43,7 +43,10 @@ Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/
             },
             json = protection_rules
         )
-        print('ProtectMasterBot successfully protected the repository with { r.status.code } code')
+        print( f"https://api.github.com/repos/{ self.org }/{ self.repo }/branches/{ self.branch }/protection")
+        print(self.access_token)
+        print(r)
+        return r.status_code
 
 
     def create_issue(self, protection_rules):
@@ -63,7 +66,22 @@ Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/
                     "API: https://developer.github.com/v3/repos/branches/#update-branch-protection" 
             }
         )
-        print('ProtectMasterBot successfully protected the repository with { r.status.code } code')
+
+    def create_failure_issue(self):
+        r = requests.post(
+            f"https://api.github.com/repos/{ self.org }/{ self.repo }/issues",
+            headers = {
+                'Accept': 'application/vnd.github.squirrel-girl-preview',
+                'Authorization': f"Token { self.access_token }"
+            },
+            json = {
+                "title": "Your branch couldn't be protected.",
+                "body": "@yuhattor \n" + 
+                    "Please check if branch protection is applicable for the branch. If you are not premium user and want to use branch protection for private repos, please consider to upgrade the plan:)"
+                    "\n\nFor more information about plans, please refer the below links\n" + 
+                    "https://github.com/pricing\n"
+            }
+        )
 
     def generate_issue_text(self, protection_rule):
         return self.heredoc(f'''

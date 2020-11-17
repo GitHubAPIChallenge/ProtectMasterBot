@@ -63,19 +63,18 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     gh_client = github_client.GitHubClient(access_token, gh_org, gh_repo, gh_default_branch)
     # Initial Commit として Master に README.md を追加
 
-
-
-
     if gh_event == 'created':
         # Create README.md
         gh_client.create_readme()
 
         # Protect Repository
-        gh_client.protect_repository(branch_protection_rules)
-
-        # Create an Issue
-        gh_client.create_issue(branch_protection_rules)
-
+        code = gh_client.protect_repository(branch_protection_rules)
+        if code == 403 or code == 404:
+            # Create an Issue
+            gh_client.create_failure_issue()
+        else:
+            # Create an Issue
+            gh_client.create_issue(branch_protection_rules)
 
     return func.HttpResponse(f"{ gh_event } function executed successfully!", status_code=200)
 
