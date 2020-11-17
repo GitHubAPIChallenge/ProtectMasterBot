@@ -8,6 +8,5 @@ jsonschema
 cryptography
 pyjwt
 bcrypt
-uuid
 base64
 azure-cosmos >= 4.0.0
