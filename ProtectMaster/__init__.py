@@ -1,12 +1,16 @@
 import logging
 import os
+import sys
 import json
 import pprint
 import requests 
 import azure.functions as func
 
+from pathlib import Path
 from jsonschema import validate, ValidationError
-from __app__.lib.github_client import GitHubClient
+
+sys.path.append((Path(__file__).parent.parent).as_posix())
+from lib.github_client import GitHubClient
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
