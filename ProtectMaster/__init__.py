@@ -1,57 +1,51 @@
 import logging
-import pprint
-import json
-import requests 
 import os
-
+import json
+import pprint
+import requests 
 import azure.functions as func
 
+from lib.github_client import GitHubClient
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
+
     logging.info('ProtectMasterBot caught GitHub repository event.')
 
-    name = req.params.get('body')
-
+    # Get and set params from the request
     request_body = json.loads(req.get_body())
     gh_event = request_body['action']
     gh_org = request_body['organization']['login']
     gh_repo = request_body['repository']['name']
     gh_default_branch = request_body['repository']['default_branch']
+
+    # Read environment variables
     access_token = os.environ["gh_access_token"]
 
-    with open("protection_rules.json") as rule_file:
+    # Read json parameters for rules and comment
+    with open("config/protection_rules.json") as rule_file:
         branch_protection_rules = json.load(rule_file)
-    
-    with open("protection_comment.json") as comment_file:
+    with open("config/protection_comment.json") as comment_file:
         branch_protection_comment = json.load(comment_file)
+
+    gh_client = GitHubClient(access_token, gh_org, gh_repo, gh_default_branch)
 
     if gh_event == 'created':
         try:
             # Protect repository
-            r = requests.put(
-                f"https://api.github.com/repos/{ gh_org }/{ gh_repo }/branches/{ gh_default_branch }/protection",
-                headers = {
-                    'Accept': 'application/vnd.github.luke-cage-preview+json',
-                    'Authorization': f"Token { access_token }"
-                },
-                json = branch_protection_rules
-            )
-            logging.info('ProtectMasterBot successfully protected the repository with { r.status.code } code')
-            logging.info(r.json())
+            r1 = ga_client.protect_repository(branch_protection_rules)
+            logging.info('ProtectMasterBot successfully protected the repository with { r1.status.code } code')
+
+            r2 = ga_client.create_issue(branch_protection_comment)
+            logging.info('ProtectMasterBot successfully created an issue with { r2.status.code } code')
+
+
         except:
             # To Be Added the error handling
             pass
+
         else:
-            r = requests.post(
-                f"https://api.github.com/repos/{ gh_org }/{ gh_repo }/issues",
-                headers = {
-                    'Accept': 'application/vnd.github.squirrel-girl-preview',
-                    'Authorization': f"Token { access_token }"
-                },
-                json = branch_protection_comment
-            )
-            logging.info('ProtectMasterBot successfully created an issue with { r.status.code } code')
-            print(r.json())
+            # To Be Added the error handling
+            pass
 
     return func.HttpResponse(f"{ gh_event } function executed successfully!", status_code=200)
 
