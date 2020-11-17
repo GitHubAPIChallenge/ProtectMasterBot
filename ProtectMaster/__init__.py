@@ -69,10 +69,17 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         # Protect Repository
         code = gh_client.protect_repository(branch_protection_rules)
-        if code == 403 or code == 404:
+
+        if code == 404:
+            # Workaround
+            gh_client = github_client.GitHubClient(access_token, gh_org, gh_repo, "main")
+            code = gh_client.protect_repository(branch_protection_rules)
+
+        if code == 403:
             # Create an Issue
             gh_client.create_failure_issue()
-        else:
+
+        if code == 200:
             # Create an Issue
             gh_client.create_issue(branch_protection_rules)
 
