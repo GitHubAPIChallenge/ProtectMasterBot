@@ -54,10 +54,11 @@ Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/
                 json = protection_rules
             )
 
+        print(r.status_code)
         return r.status_code
 
 
-    def create_issue(self, protection_rules):
+    def create_issue(self, protection_rules, mention):
         r = requests.post(
             f"https://api.github.com/repos/{ self.org }/{ self.repo }/issues",
             headers = {
@@ -66,7 +67,7 @@ Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/
             },
             json = {
                 "title": "Your branch is protected now!",
-                "body": "@yuhattor \n" + 
+                "body": f"{ mention } \n" + 
                     "The default branch has just been protected. Please refer the setting like below.\n" + 
                     self.generate_issue_text(protection_rules) + 
                     "\n\nFor more information about brunch protection, please refer the below links\n" + 
@@ -75,7 +76,7 @@ Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/
             }
         )
 
-    def create_failure_issue(self):
+    def create_failure_issue(self, mention):
         r = requests.post(
             f"https://api.github.com/repos/{ self.org }/{ self.repo }/issues",
             headers = {
@@ -84,7 +85,7 @@ Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/
             },
             json = {
                 "title": "Your branch couldn't be protected.",
-                "body": "@yuhattor \n" + 
+                "body": f"{ mention } \n" + 
                     "Please check if branch protection is applicable for the branch. If you are not premium user and want to use branch protection for private repos, please consider to upgrade the plan:)"
                     "\n\nFor more information about plans, please refer the below links\n" + 
                     "https://github.com/pricing\n"

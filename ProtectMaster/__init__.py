@@ -40,6 +40,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         items.append(item)
 
     installation_id = items[0]["installation_id"]
+    protection_json = items[0]["protection_json"]
+    mention = items[0]["mention"]
 
     # Token を払い出す。
     app_id = os.environ["gh_app_id"]
@@ -62,6 +64,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     gh_client = github_client.GitHubClient(access_token, gh_org, gh_repo, gh_default_branch)
     # Initial Commit として Master に README.md を追加
+    print(protection_json)
+    if len(protection_json) > 0:
+        branch_protection_rules = json.loads(protection_json)
 
     if gh_event == 'created':
         # Create README.md
@@ -72,9 +77,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         if code == 200:
             # Create an Issue
-            gh_client.create_issue(branch_protection_rules)
+            gh_client.create_issue(branch_protection_rules, mention)
         else:
-            gh_client.create_failure_issue()
+            gh_client.create_failure_issue(mention)
 
 
     return func.HttpResponse(f"{ gh_event } function executed successfully!", status_code=200)

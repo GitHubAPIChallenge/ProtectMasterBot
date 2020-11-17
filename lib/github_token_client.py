@@ -3,8 +3,7 @@ import jwt
 import sys
 import json
 import requests
-import bcrypt
-import uuid
+
 from datetime import timedelta, datetime
 
 class GitHubTokenClient:
@@ -35,20 +34,9 @@ class GitHubTokenClient:
                 'Accept': 'application/vnd.github.v3+json'
             }
         )
+        ### add error handling
         return json.loads(response.text)['account']['login']
 
-    def generate_password(self):
-        password = uuid.uuid4().hex
-        hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt(12)).decode('utf-8') # for db
-        print(hash)
-        return {
-            "password": password, # will be given_password
-            "hash": hash # will be saved_password
-        }
-
-    def validate_password(self, given_password, saved_password):
-        hash = bcrypt.checkpw(given_password.encode(), saved_password.encode())
-        return hash
 
     def get_token(self):
         jwt = self.generate_jwt_token()
