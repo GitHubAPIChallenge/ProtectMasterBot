@@ -1,16 +1,14 @@
 import logging
 import os
-import sys
 import json
 import pprint
 import requests 
 import azure.functions as func
 
-from pathlib import Path
 from jsonschema import validate, ValidationError
 
-sys.path.append((Path(__file__).parent.parent).as_posix())
-from lib.github_client import GitHubClient
+from lib import github_client
+
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
@@ -37,7 +35,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     except ValidationError as e:
         logging.info('Validation Error on protection_rules.json')
 
-    gh_client = GitHubClient(access_token, gh_org, gh_repo, gh_default_branch)
+    gh_client = github_client.GitHubClient(access_token, gh_org, gh_repo, gh_default_branch)
 
     gh_client.generate_issue(branch_protection_rules)
 
