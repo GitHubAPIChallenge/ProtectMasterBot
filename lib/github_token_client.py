@@ -14,10 +14,6 @@ class GitHubTokenClient:
         self.private_key = app_pem.encode()
         self.installation_id = installation_id
 
-        # from cryptography.hazmat.backends import default_backend
-        # self.cert_bytes = app_pem.encode()
-        # self.private_key = default_backend().load_pem_private_key(self.cert_bytes, None)
-
     def generate_jwt_token(self):
         alg = 'RS256'
         utcnow = datetime.utcnow()

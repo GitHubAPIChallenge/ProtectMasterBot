@@ -9,3 +9,5 @@ cryptography
 pyjwt
 bcrypt
 secrets
+base64
+azure-cosmos >= 4.0.0

@@ -37,7 +37,7 @@ def main(req: func.HttpRequest, outdoc: func.Out[func.Document]) -> func.HttpRes
 
             # cosmosdb 
             outdata = {
-                "gh_org": gh_org,
+                "id": gh_org,
                 "installation_id": installation_id,
                 "protection_json": "",
                 "mention": "",

@@ -1,6 +1,7 @@
 import os
 import re
 import requests 
+import base64
 from textwrap import dedent
 
 class GitHubClient:
@@ -9,6 +10,28 @@ class GitHubClient:
         self.org = org
         self.repo = repo
         self.branch = branch
+
+    def create_readme(self):
+        text = f"""
+# README.md
+ProtectMasterBot initiated this repository. 
+Master / Main branch is currently protected.
+Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/issues/1) for more information about protection!"""
+
+        r = requests.put(
+            f"https://api.github.com/repos/{ self.org }/{ self.repo }/contents/README.md",
+            headers = {
+                'Authorization': f"Token { self.access_token }"
+            },
+            json = {
+                "message": "init!",
+                "committer": {
+                    "name": "Protect Master Bot",
+                    "email": "protect@hattori.dev"
+                },
+                "content": base64.b64encode(text.encode('utf-8')).decode()
+            }
+        )
 
     # Protect repository
     def protect_repository(self, protection_rules):
@@ -20,7 +43,7 @@ class GitHubClient:
             },
             json = protection_rules
         )
-        print('ProtectMasterBot successfully protected the repository with { r1.status.code } code')
+        print('ProtectMasterBot successfully protected the repository with { r.status.code } code')
 
 
     def create_issue(self, protection_rules):
@@ -34,15 +57,15 @@ class GitHubClient:
                 "title": "Your branch is protected now!",
                 "body": "@yuhattor \n" + 
                     "The default branch has just been protected. Please refer the setting like below.\n" + 
-                    self.generate_issue(protection_rules) + 
+                    self.generate_issue_text(protection_rules) + 
                     "\n\nFor more information about brunch protection, please refer the below links\n" + 
                     "Docs: https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/configuring-protected-branches\n" +
                     "API: https://developer.github.com/v3/repos/branches/#update-branch-protection" 
             }
         )
-        print('ProtectMasterBot successfully protected the repository with { r1.status.code } code')
+        print('ProtectMasterBot successfully protected the repository with { r.status.code } code')
 
-    def generate_issue(self, protection_rule):
+    def generate_issue_text(self, protection_rule):
         return self.heredoc(f'''
             Rule                            |                                   |               | Parameter
             ------------                    | -------------                     | ------------  | ------------- 
@@ -62,7 +85,6 @@ class GitHubClient:
             allow_force_pushes              |                                   |               | { self.read_json(protection_rule, "allow_force_pushes") }
             allow_deletions                 |                                   |               | { self.read_json(protection_rule, "allow_deletions") }
             ''').replace(" ", "")          
-
 
     # json read safe
     def read_json(self, json, *args):
