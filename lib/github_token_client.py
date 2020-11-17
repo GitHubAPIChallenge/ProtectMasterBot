@@ -4,7 +4,7 @@ import sys
 import json
 import requests
 import bcrypt
-import secrets
+import uuid
 from datetime import timedelta, datetime
 
 class GitHubTokenClient:
@@ -38,7 +38,7 @@ class GitHubTokenClient:
         return json.loads(response.text)['account']['login']
 
     def generate_password(self):
-        password = secrets.token_urlsafe(16) # for user
+        password = uuid.uuid4().hex
         hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt(12)).decode('utf-8') # for db
         print(hash)
         return {
