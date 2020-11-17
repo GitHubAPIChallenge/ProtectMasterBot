@@ -1,0 +1,80 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "required_status_checks": {
+            "type": "object",
+            "properties": {
+                "strict": {
+                    "type": "boolean"
+                },
+                "contexts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "enforce_admins": {
+            "type": "boolean"
+        },
+        "required_pull_request_reviews": {
+            "type": "object",
+            "properties": {
+                "dismissal_restrictions": {
+                    "type": "object",
+                    "properties": {
+                        "users": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "teams": {
+                            "type": "array"
+                        },
+                        "apps": {
+                            "type": "array"
+                        }
+                    }
+                },
+                "dismiss_stale_reviews": {
+                    "type": "boolean"
+                },
+                "require_code_owner_reviews": {
+                    "type": "boolean"
+                },
+                "required_approving_review_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "restrictions": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "teams": {
+                    "type": "array"
+                },
+                "apps": {
+                    "type": "array"
+                }
+            }
+        },
+        "required_linear_history": {
+            "type": "boolean"
+        },
+        "allow_force_pushes": {
+            "type": "boolean"
+        },
+        "allow_deletions": {
+            "type": "boolean"
+        }
+    }
+}

@@ -2,7 +2,7 @@
     "required_status_checks": {
         "strict": true,
         "contexts": [
-            "continuous-integration/travis-ci"
+            "build-and-deploy"
         ]
     },
     "enforce_admins": true,
@@ -11,9 +11,8 @@
             "users": [
                 "yuhattor"
             ],
-            "teams": [
-                "justice-league"
-            ]
+            "teams": [],
+            "apps": []
         },
         "dismiss_stale_reviews": true,
         "require_code_owner_reviews": true,
@@ -23,12 +22,8 @@
         "users": [
             "yuhattor"
         ],
-        "teams": [
-            "justice-league"
-        ],
-        "apps": [
-            "super-ci"
-        ]
+        "teams": [],
+        "apps": []
     },
     "required_linear_history": true,
     "allow_force_pushes": true,

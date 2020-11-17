@@ -5,6 +5,7 @@ import pprint
 import requests 
 import azure.functions as func
 
+from jsonschema import validate, ValidationError
 from lib.github_client import GitHubClient
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -21,23 +22,32 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # Read environment variables
     access_token = os.environ["gh_access_token"]
 
-    # Read json parameters for rules and comment
-    with open("config/protection_rules.json") as rule_file:
-        branch_protection_rules = json.load(rule_file)
-    with open("config/protection_comment.json") as comment_file:
-        branch_protection_comment = json.load(comment_file)
+
+    # Read protection rules json parameters
+    try:
+        with open("config/protection_rules.json") as rule_file:
+            branch_protection_rules = json.load(rule_file)
+        with open('config/protection_rules_schema.json') as schema_file:
+            rules_schema = json.load(schema_file)
+        validate(branch_protection_rules, rules_schema)
+    except ValidationError as e:
+        logging.info('Validation Error on protection_rules.json')
+
 
     gh_client = GitHubClient(access_token, gh_org, gh_repo, gh_default_branch)
 
+    gh_client.generate_issue(branch_protection_rules)
+
     if gh_event == 'created':
+        # Protect Repository
+        gh_client.protect_repository(branch_protection_rules)
+
+        # Create an Issue
+        gh_client.create_issue(branch_protection_rules)
+
+
         try:
-            # Protect repository
-            r1 = ga_client.protect_repository(branch_protection_rules)
-            logging.info('ProtectMasterBot successfully protected the repository with { r1.status.code } code')
-
-            r2 = ga_client.create_issue(branch_protection_comment)
-            logging.info('ProtectMasterBot successfully created an issue with { r2.status.code } code')
-
+            pass
 
         except:
             # To Be Added the error handling
