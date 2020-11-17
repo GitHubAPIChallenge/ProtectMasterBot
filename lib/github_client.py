@@ -43,9 +43,17 @@ Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/
             },
             json = protection_rules
         )
-        print( f"https://api.github.com/repos/{ self.org }/{ self.repo }/branches/{ self.branch }/protection")
-        print(self.access_token)
-        print(r)
+
+        if r.status_code == 404:
+            r = requests.put(
+                f"https://api.github.com/repos/{ self.org }/{ self.repo }/branches/main/protection",
+                headers = {
+                    'Accept': 'application/vnd.github.luke-cage-preview+json',
+                    'Authorization': f"Token { self.access_token }"
+                },
+                json = protection_rules
+            )
+
         return r.status_code
 
 
