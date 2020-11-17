@@ -15,6 +15,17 @@
       "type": "http",
       "direction": "out",
       "name": "$return"
+    },
+    {
+      "type": "cosmosDB",
+      "direction": "out",
+      "name": "outdoc",
+      "databaseName": "apichallenge",
+      "collectionName": "usersettings",
+      "leaseCollectionName": "leases",
+      "createLeaseCollectionIfNotExists": true,
+      "connectionStringSetting": "cosmosdb_connection_string",
+      "createIfNotExists": true
     }
   ]
 }
