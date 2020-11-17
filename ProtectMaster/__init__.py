@@ -6,7 +6,7 @@ import requests
 import azure.functions as func
 
 from jsonschema import validate, ValidationError
-from lib.github_client import GitHubClient
+from __app__.lib.github_client import GitHubClient
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
@@ -32,7 +32,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         validate(branch_protection_rules, rules_schema)
     except ValidationError as e:
         logging.info('Validation Error on protection_rules.json')
-
 
     gh_client = GitHubClient(access_token, gh_org, gh_repo, gh_default_branch)
 
