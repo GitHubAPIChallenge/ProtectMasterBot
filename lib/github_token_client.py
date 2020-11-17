@@ -1,7 +1,10 @@
 import os
 import jwt
+import sys
 import json
 import requests
+import bcrypt
+import secrets
 from datetime import timedelta, datetime
 
 class GitHubTokenClient:
@@ -27,19 +30,37 @@ class GitHubTokenClient:
         }
         return jwt.encode(payload, self.private_key, algorithm=alg).decode('utf-8')
 
-    def generate_headers(self):
+    def get_installation(self):
         jwt = self.generate_jwt_token()
+        response = requests.get(
+            f'https://api.github.com/app/installations/{ self.installation_id }',
+            headers= {
+                'Authorization': f'Bearer { jwt }',
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        )
+        return json.loads(response.text)['account']['login']
+
+    def generate_password(self):
+        password = secrets.token_urlsafe(16) # for user
+        hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt(12)).decode('utf-8') # for db
+        print(hash)
         return {
-            'Authorization': f'Bearer { jwt }',
-            'Accept': 'application/vnd.github.machine-man-preview+json',
+            "password": password, # will be given_password
+            "hash": hash # will be saved_password
         }
 
+    def validate_password(self, given_password, saved_password):
+        hash = bcrypt.checkpw(given_password.encode(), saved_password.encode())
+        return hash
+
     def get_token(self):
+        jwt = self.generate_jwt_token()
         response = requests.post(
             f'https://api.github.com/app/installations/{ self.installation_id }/access_tokens',
-            headers=self.generate_headers()
+            headers= {
+                'Authorization': f'Bearer { jwt }',
+                'Accept': 'application/vnd.github.machine-man-preview+json'
+            }
         )
         return json.loads(response.text).get('token')
-
-    # Add Functions to get installation detail
-        # https://api.github.com/app/installations/13018984
