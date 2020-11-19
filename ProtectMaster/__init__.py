@@ -4,82 +4,94 @@ import json
 import pprint
 import requests 
 import azure.functions as func
-
-from azure.cosmos import CosmosClient
 from jsonschema import validate, ValidationError
-
 from lib import github_client
 from lib import github_token_client
+from lib import cosmosdb_client
+# ---------------------------------------------------------
+# 
+#  This is a main function for master branch protection process
+# 
+# ---------------------------------------------------------
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
     logging.info('ProtectMasterBot caught GitHub repository event.')
 
     # Get and set params from the request
-    request_body = json.loads(req.get_body())
-    gh_event = request_body['action']
-    gh_org = request_body['organization']['login']
-    gh_repo = request_body['repository']['name']
-    gh_default_branch = request_body['repository']['default_branch']
+    try: 
+        request_body = json.loads(req.get_body())
+        gh_event = request_body['action']
+        gh_org = request_body['organization']['login']
+        gh_repo = request_body['repository']['name']
+        gh_default_branch = request_body['repository']['default_branch']
+    except (KeyError, ValueError):  
+        logging.error('Json payload was not valid')
+        return func.HttpResponse("Error! Json payload was not valid.", status_code=500)
 
-    # まず、InstallationID をゲット
+    # Get and set params from environment variables
+    try: 
+        connection_string = os.environ['cosmosdb_connection_string']
+        app_id = os.environ["gh_app_id"]
+        app_pem = os.environ["gh_app_pem"]
+    except (KeyError, ValueError):
+        logging.error('Could not read environment variables')
+        return func.HttpResponse("Error! Please set environment variables", status_code=500)
 
-    conn_str = os.environ['cosmosdb_connection_string']
 
-    client = CosmosClient.from_connection_string(conn_str, credential=None)
-    database_name = "apichallenge"
-    database = client.get_database_client(database_name)
-    container_name = "usersettings"
-    container = database.get_container_client(container_name)
-    cosmos_query = f'SELECT * FROM c WHERE c.id="{ gh_org }"'
+    # Get org data from CosmosDB
+    try:
+        cc = cosmosdb_client.CosmosDBClient(connection_string, "apichallenge", "usersettings")
+        org_data = cc.get(gh_org)
+    except: 
+        return func.HttpResponse("Error! Could not aquire the result from the db. Please reinstall GitHub Apps.", status_code=500)
 
-    items = []
-    for item in container.query_items(
-            query=cosmos_query,
-            enable_cross_partition_query=True):
-        items.append(item)
+    # Get org information from query result
+    try: 
+        installation_id = org_data["installation_id"]
+        protection_json = org_data["protection_json"]
+        mention = org_data["mention"]
+    except KeyError:
+        logging.error('Error! lack of some data')
+        return func.HttpResponse("Error! Data stored in database is not well formatted.", status_code=500)
 
-    installation_id = items[0]["installation_id"]
-    protection_json = items[0]["protection_json"]
-    mention = items[0]["mention"]
-
-    # Token を払い出す。
-    app_id = os.environ["gh_app_id"]
-    app_pem = os.environ["gh_app_pem"]
+    # Make GitHub Apps issue a valid access token 
     gh_token_client = github_token_client.GitHubTokenClient(app_id, app_pem, installation_id)
     access_token = gh_token_client.get_token()
 
+    # Open protection rules json parameters
+    with open("config/protection_rules.json") as rule_file:
+        branch_protection_default_rules = json.load(rule_file)
+    with open('config/protection_rules_schema.json') as schema_file:
+        rules_schema = json.load(schema_file)
 
-
-
-    # Read protection rules json parameters
+    # Read and check user rules
+    protection_rules = branch_protection_default_rules
     try:
-        with open("config/protection_rules.json") as rule_file:
-            branch_protection_rules = json.load(rule_file)
-        with open('config/protection_rules_schema.json') as schema_file:
-            rules_schema = json.load(schema_file)
-        validate(branch_protection_rules, rules_schema)
-    except ValidationError as e:
-        logging.info('Validation Error on protection_rules.json')
-
-    gh_client = github_client.GitHubClient(access_token, gh_org, gh_repo, gh_default_branch)
-    # Initial Commit として Master に README.md を追加
-    print(protection_json)
-    if len(protection_json) > 0:
-        branch_protection_rules = json.loads(protection_json)
+        protection_rules = json.loads(protection_json)
+        if validate(protection_rules, rules_schema):
+            protection_rules = protection
+    except (KeyError, ValueError, ValidationError) as e:  
+        logging.info('Could not read or validate protection rule as json, we applied default rule!')
 
     if gh_event == 'created':
-        # Create README.md
-        gh_client.create_readme()
+        gh_client = github_client.GitHubClient(access_token, gh_org, gh_repo, gh_default_branch)
 
-        # Protect Repository
-        r = gh_client.protect_repository(branch_protection_rules)
+        # Create README.md
+        r = gh_client.create_readme()
+        logging.error(r.status_code)
+
+        # Protect Repository with protection rules
+        r = gh_client.protect_repository(protection_rules)
+        logging.error(r.status_code)
 
         if r.status_code == 200:
             # Create an Issue
-            gh_client.create_issue(mention, branch_protection_rules)
+            r = gh_client.create_issue(mention, protection_rules)
+            logging.error(r.status_code)
         else:
-            gh_client.create_issue(mention)
+            r = gh_client.create_issue(mention)
+            logging.error(r.status_code)
 
 
     return func.HttpResponse(f"{ gh_event } function executed successfully!", status_code=200)
