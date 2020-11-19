@@ -8,7 +8,7 @@ However, it's very hard to apply protection rules every single time right after 
 It's very easy to use ProtectMasterBot. Please install the bot in your organization.
 Please Access **[HERE](https://github.com/apps/protectmasterbot)** to get the bot!
 
-![](./contents/Installation.png)
+[![](./contents/Installation.png)](https://github.com/apps/protectmasterbot)
 ### How to use
 
 
