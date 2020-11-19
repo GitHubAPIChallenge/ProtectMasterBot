@@ -1,10 +1,11 @@
 # ProtectMasterBot
 
 ### About this bot
-
+![](./contents/HowToUse.png)
 ### Architecture
+![](./contents/ProtectDiagram.png)
 
-### How to get started
+![](./contents/ManagementDiagram.png)
 
 ### How to run this app
 
