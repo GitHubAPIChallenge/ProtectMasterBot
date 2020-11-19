@@ -11,8 +11,6 @@ Please Access **[HERE](https://github.com/apps/protectmasterbot)** to get the bo
 [![](./contents/Installation.png)](https://github.com/apps/protectmasterbot)
 ## How to use
 
-
-## 
 ![](./contents/HowToUse.png)
 
 ---
@@ -95,7 +93,7 @@ Please refer to the below link to get the publishing profile (*.pubxml)
 https://docs.microsoft.com/en-us/visualstudio/deployment/tutorial-import-publish-settings-azure?view=vs-2019
 You will use it for deployment
 
-##### On GitHub
+### On GitHub
 1. Set Secret for CI/CD
 Please refer to the below link to set the secret for CI/CD
 https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
@@ -105,7 +103,7 @@ Secret Name|Value
 ---|-----
 AZURE_FUNCTIONAPP_PUBLISH_PROFILE| Your downloaded publishing profile.
 
-#### Setup GitHub Apps setting.
+### Setup GitHub Apps setting.
 Finally, it's time to setup the GitHub Apps with the parameters
 Please fill in the form with the below parameter.
 
@@ -133,21 +131,21 @@ Repository| true
 NOW You are ready to use the bot!
 
 ---
-#### How to run API in your local environment
+## How to run API in your local environment
 You need to rename ```local.settings.json.sample``` as ```local.settings.json```, then set the values.
 If you don't have a PEM file and GitHub Apps id, you need to create GitHub Apps first. Please refer to the documentation.
 https://docs.github.com/ja/github-ae@latest/developers/apps/about-apps
 Also, you need a CosmosDB environment beforehand. You can deploy it on Azure and you can also use the CosmosDB emulator for local development if you want.
 https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator?tabs=cli%2Cssl-netstd21
 
-##### local.setting.json
+### local.setting.json
 ```
 "gh_app_pem": "<your pem string>",
 "gh_app_id": "<your custom app id>",
 "cosmosdb_connection_string": "<your CcosmosDBs connection string>"
 ```
 
-##### Run Function
+### Run Function
 ```sh
 pip install -r requirements.txt
 func start
