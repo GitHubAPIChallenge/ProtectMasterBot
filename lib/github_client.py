@@ -4,6 +4,12 @@ import logging
 import requests 
 from textwrap import dedent
 
+# ---------------------------------------------------------
+# 
+#  This is a class to handle GitHub API access
+# 
+# ---------------------------------------------------------
+
 class GitHubClient:
     def __init__(self, access_token, org, repo, branch):
         self.access_token = access_token
