@@ -73,13 +73,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         gh_client.create_readme()
 
         # Protect Repository
-        code = gh_client.protect_repository(branch_protection_rules)
+        r = gh_client.protect_repository(branch_protection_rules)
 
-        if code == 200:
+        if r.status_code == 200:
             # Create an Issue
-            gh_client.create_issue(branch_protection_rules, mention)
+            gh_client.create_issue(mention, branch_protection_rules)
         else:
-            gh_client.create_failure_issue(mention)
+            gh_client.create_issue(mention)
 
 
     return func.HttpResponse(f"{ gh_event } function executed successfully!", status_code=200)
