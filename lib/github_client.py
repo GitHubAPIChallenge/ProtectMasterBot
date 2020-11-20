@@ -158,6 +158,5 @@ https://github.com/pricing
         return '''
 # README.md
 ProtectMasterBot initiated this repository. 
-Master / Main branch is currently protected.
 Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/issues/1) for more information about protection!
 '''
