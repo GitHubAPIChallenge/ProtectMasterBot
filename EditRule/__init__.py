@@ -19,16 +19,23 @@ def main(req: func.HttpRequest, indoc: func.DocumentList) -> func.HttpResponse:
     try: 
         password = req.params.get('password')
         org = req.params.get('org')
+    except (KeyError, ValueError, TypeError):  
+        logging.error('Params were not valid')
+        return func.HttpResponse("Sorry, something went wrong!", status_code=500)
+
+    # Get data from bindings
+    try: 
         password_hash = indoc[0]["password_hash"]
         user_rules = indoc[0]["protection_json"]
         mention = indoc[0]["mention"]
-    except (KeyError, ValueError):  
-        logging.error('Json payload was not valid')
+    except (KeyError, ValueError, TypeError):  
+        logging.error('Data is not valid')
         return func.HttpResponse("Sorry, something went wrong!", status_code=500)
     
     # Read rules and schema file
     with open("config/protection_rules.json") as rule_file:
-        branch_protection_default_rules = json.load(rule_file)
+        # branch_protection_default_rules = json.load(rule_file)
+        branch_protection_default_rules = rule_file.read()
 
     # Read and check user rules
     protection_rules = branch_protection_default_rules
@@ -36,6 +43,7 @@ def main(req: func.HttpRequest, indoc: func.DocumentList) -> func.HttpResponse:
         protection_rules = user_rules
 
     password_validation = password_client.validate_password(password, password_hash)
+
     if password_validation:
         return func.HttpResponse( f"""
                 <html><head>
