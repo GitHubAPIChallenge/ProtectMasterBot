@@ -13,7 +13,8 @@ class CosmosDBClient:
         self.database_name = database_name
         self.container_name = container_name
         self.client = CosmosClient.from_connection_string(self.connection_string, credential=None)
-
+    
+    # Get data tied to specific organization
     def get(self, org):
         try: 
             database = self.client.get_database_client(self.database_name) 

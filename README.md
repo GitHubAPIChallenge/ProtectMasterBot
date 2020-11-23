@@ -47,20 +47,13 @@ Deployment can be done by GitHub Actions.
 
 ### How to deploy API on Azure.
 
-### GitHub Apps setting
-
-You will need PEM file and app ID for GitHub Apps beforehand.
-Please refer to the below documents to get PEM file and App ID 
-https://developer.github.com/apps/building-github-apps/authenticating-with-github-apps/
-
-To learn more about GitHub Apps, please check below.
-https://docs.github.com/ja/github-ae@latest/developers/apps/about-apps
-
 ### On Azure Portal
-1. Create Azure Functions
-Please refer to the below link for Azure Functions creation.
-https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-azure-function
+1. **Create Azure Functions**
+   1. Open portal.azure.com and create Azure FunctionApp.
+![](./contents/hands-on/AzureFunctions1.png)
+   2. **Fill in the form with parameters.**
 Note: You need to fill in the form with the below specific parameters while creating.
+![](./contents/hands-on/AzureFunctions2.png)
 
 Input |Parameters
 ---|-----
@@ -68,30 +61,40 @@ Publish | **code**
 Runtime stack| **Python**
 Version | **3.8**
 
-2. Create CosmosDB
-Please refer to the below link for Azure CosmosDB deployment.
-https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account
-Note: You need to fill in the form with the below specific parameters while creating.
+   3.  **Deploy Azure Functions** 
+![](./contents/hands-on/AzureFunctions3.png)
+
+   4.  **Download and memo the your-protectmasterbot.PublishSettings file** 
+![](./contents/hands-on/AzureFunctions4.png)
+
+Please refer to the below link to get the publishing profile (*.pubxml) 
+https://docs.microsoft.com/en-us/visualstudio/deployment/tutorial-import-publish-settings-azure?view=vs-2019
+You will use it for deployment
+
+Please refer to the below link for more information about Azure Functions creation.
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-azure-function
+
+
+2. **Create CosmosDB**
+   1. **Open portal.azure.com and create CosmosDB.**
+![](./contents/hands-on/CosmosDB1.png)
+
+   2. **Fill in the form with parameters.**
+![](./contents/hands-on/CosmosDB2.png)
+
+   3.  **Deploy Azure CosmosDB** 
+![](./contents/hands-on/CosmosDB3.png)
 
 Input |Parameters
 ---|-----
 API | Core (SQL)
 
-3. Configure the Azure Functions
-Please refer to the below link for Azure Functions configuration
-https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings
-You need to add the environment variables below
+   4.  **Memo your primary key of CosmosDB** 
+![](./contents/hands-on/CosmosDB4.png)
 
-Key|Value
----|-----
-gh_app_pem | your GitHub App's PEM string which must be encoded with Base64
-gh_app_id | GitHub Apps ID
-cosmosdb_connection_string | Your CosmosDB connection string 
-
-4. Get the Publishing Profile
-Please refer to the below link to get the publishing profile (*.pubxml) 
-https://docs.microsoft.com/en-us/visualstudio/deployment/tutorial-import-publish-settings-azure?view=vs-2019
-You will use it for deployment
+Please refer to the below link for Azure CosmosDB deployment.
+https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account
+Note: You need to fill in the form with the below specific parameters while creating.
 
 ### On GitHub
 1. Set Secret for CI/CD
@@ -127,6 +130,27 @@ Subscribe to events|Check
 ---|---
 Repository| true
 
+4. Download GitHub Apps' PEM key
+You will need PEM file and app ID for GitHub Apps beforehand.
+Please refer to the below documents to get PEM file and App ID 
+https://developer.github.com/apps/building-github-apps/authenticating-with-github-apps/
+
+To learn more about GitHub Apps, please check below.
+https://docs.github.com/ja/github-ae@latest/developers/apps/about-apps
+
+### Setup Your Azure Function's Apps setting on Azure.
+4. Configure the Azure Functions
+![](./contents/hands-on/AzureFunctions5.png)
+
+Please refer to the below link for Azure Functions configuration
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings
+You need to add the environment variables below
+
+Key|Value
+---|-----
+gh_app_pem | your GitHub App's PEM string which must be encoded with Base64
+gh_app_id | GitHub Apps ID
+cosmosdb_connection_string | Your CosmosDB connection string 
 
 NOW You are ready to use the bot!
 
