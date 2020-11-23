@@ -47,11 +47,10 @@ Deployment can be done by GitHub Actions.
 
 ### How to deploy API on Azure.
 
-### On Azure Portal
-1. **Create Azure Functions**
-   1. Open portal.azure.com and create Azure FunctionApp.
+### Create Azure Functions
+1. Open portal.azure.com and create Azure FunctionApp.
 ![](./contents/hands-on/AzureFunctions1.png)
-   2. **Fill in the form with parameters.**
+2. **Fill in the form with parameters.**
 Note: You need to fill in the form with the below specific parameters while creating.
 ![](./contents/hands-on/AzureFunctions2.png)
 
@@ -61,17 +60,17 @@ Publish | **code**
 Runtime stack| **Python**
 Version | **3.8**
 
-   3.  **Deploy Azure Functions** 
+3.  **Deploy Azure Functions** 
 ![](./contents/hands-on/AzureFunctions3.png)
 
-   4.  **Download and memo the your-protectmasterbot.PublishSettings file** 
+4.  **Download and memo the your-protectmasterbot.PublishSettings file** 
 ![](./contents/hands-on/AzureFunctions4.png)
 
 Please refer to the below link to get the publishing profile (*.pubxml) 
 https://docs.microsoft.com/en-us/visualstudio/deployment/tutorial-import-publish-settings-azure?view=vs-2019
 You will use it for CI/CD
 
-   5.  **Memo the URL of Azure Functions** 
+5.  **Memo the URL of Azure Functions** 
 ![](./contents/hands-on/AzureFunctions5.png)
 You will use it for GitHub Apps setting
 
@@ -80,32 +79,31 @@ Please refer to the below link for more information about Azure Functions creati
 https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-azure-function
 
 
-2. **Create CosmosDB**
-   1. **Open portal.azure.com and create CosmosDB.**
+### Create CosmosDB
+1. **Open portal.azure.com and create CosmosDB.**
 ![](./contents/hands-on/CosmosDB1.png)
 
-   2. **Fill in the form with parameters.**
+2. **Fill in the form with parameters.**
 ![](./contents/hands-on/CosmosDB2.png)
 
-   3.  **Deploy Azure CosmosDB** 
+3.  **Deploy Azure CosmosDB** 
 ![](./contents/hands-on/CosmosDB3.png)
 
 Input |Parameters
 ---|-----
 API | Core (SQL)
 
-   4.  **Memo your primary key of CosmosDB** 
+4.  **Memo your primary key of CosmosDB** 
 ![](./contents/hands-on/CosmosDB4.png)
 
 Please refer to the below link for Azure CosmosDB deployment.
 https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account
 Note: You need to fill in the form with the below specific parameters while creating.
 
-### On GitHub
-1. **Set Secret for CI/CD**
-   1. Go to YOUR github repository of ProtectMasterBot which you forked or cloned. 
-   2. Then go to Settings > Secrets and add your Respository secrets named "AZURE_FUNCTIONAPP_PUBLISH_PROFILE"
-   3. Set your publishingProfile value of Azure Functions.
+### Set Secret for CI/CD on your GitHub repository
+1. Go to YOUR github repository of ProtectMasterBot which you forked or cloned. 
+2. Then go to Settings > Secrets and add your Respository secrets named "AZURE_FUNCTIONAPP_PUBLISH_PROFILE"
+3. Set your publishingProfile value of Azure Functions.
 ![](./contents/hands-on/GitHub1.png)
 
 Please refer to the below link to set the secret for CI/CD
@@ -116,17 +114,14 @@ Secret Name|Value
 ---|-----
 AZURE_FUNCTIONAPP_PUBLISH_PROFILE| Your downloaded publishing profile.
 
-### Setup GitHub Apps setting.
+### Setup your GitHub Apps
 It's time to setup the GitHub Apps 
-
-1. **Create your GitHub Apps**
-    1. Go to your Settings > Developer settings > GitHub Apps
-    2. Then create your GitHub App.
-    ![](./contents/hands-on/GitHubApps1.png)
-
-1. **Create your GitHub Apps**
+1. Go to your Settings > Developer settings > GitHub Apps
+2. Then create your GitHub App.
+![](./contents/hands-on/GitHubApps1.png)
 Please fill in the form with the below parameter.
-    1. General Settings
+
+**General Settings**
 
 Input|Value
 ---|---
@@ -137,7 +132,7 @@ User authorization callback URL | https://<YOUR AZURE FUNCTIONS URL>.azurewebsit
 Webhook | active
 Webhook URL| https://<YOUR_AZURE_FUNCTIONS_NAME>.azurewebsites.net/api/ProtectMaster
 
-2. Permissions
+**Permissions**
 
 Permissions|Value|Detail
 ---|---|---
@@ -145,17 +140,18 @@ Administration | Read & Write | This permission is necessary to apply branch pro
 Contents | Read & Write | This permission is necessary to initiate repository with README.md
 Issues | Read & Write | This permission is necessary to create an issue
 
-3. Events
+**Events**
 
 Subscribe to events|Check
 ---|---
 Repository| true
 
-4. Confirm Creation
+3. Confirm Creation
+
 Please memo your App ID
 ![](./contents/hands-on/GitHubApps3.png)
 
-5. Generate and Download GitHub Apps' PEM key
+4. Generate and Download GitHub Apps' PEM key
 You will need PEM file and app ID for GitHub Apps beforehand.
 ![](./contents/hands-on/GitHubApps4.png)
 
