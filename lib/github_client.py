@@ -19,7 +19,7 @@ class GitHubClient:
 
     # API Request to create README.md
     def create_readme(self):
-        text = self.get_readme_text()
+        text = self.get_readme_text(self.org, self.repo)
         try:
             r = requests.put(
                 f"https://api.github.com/repos/{ self.org }/{ self.repo }/contents/README.md",
@@ -116,7 +116,7 @@ class GitHubClient:
     def get_success_text(self, protection_rules):
         try: 
             text = dedent((f'''
-The default branch has just been protected. Please refer the setting like below.\n\n
+The default branch has just been protected.\n\n
 Rule                            |                                   |               | Parameter
 ------------                    | -------------                     | ------------  | ------------- 
 required_status_checks          | strict                            |               | { self.read_json_safe(protection_rules, "required_status_checks", "strict") }
@@ -154,9 +154,9 @@ https://github.com/pricing
 '''
 
     # Get text for README.md
-    def get_readme_text(self):
-        return '''
+    def get_readme_text(self, org, repo):
+        return f'''
 # README.md
 ProtectMasterBot initiated this repository. 
-Please take a look at the [issue](https://github.com/{ self.org }/{ self.repo }/issues/1) for more information about protection!
+Please take a look at the [issue](https://github.com/{ org }/{ repo }/issues/1) for more information about protection!
 '''
