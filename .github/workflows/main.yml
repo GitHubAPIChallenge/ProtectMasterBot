@@ -29,7 +29,9 @@ jobs:
         popd
 
     - name: 'Run Test'
-      run: python -m unittest discover ./tests/ -p '*_test.py'
+      run: | 
+        export PYTHONPATH=".python_packages/lib/site-packages:$PYTHONPATH"
+        python -m unittest discover ./tests/ -p '*_test.py'
 
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
