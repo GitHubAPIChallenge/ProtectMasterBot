@@ -69,7 +69,12 @@ Version | **3.8**
 
 Please refer to the below link to get the publishing profile (*.pubxml) 
 https://docs.microsoft.com/en-us/visualstudio/deployment/tutorial-import-publish-settings-azure?view=vs-2019
-You will use it for deployment
+You will use it for CI/CD
+
+   5.  **Memo the URL of Azure Functions** 
+![](./contents/hands-on/AzureFunctions5.png)
+You will use it for GitHub Apps setting
+
 
 Please refer to the below link for more information about Azure Functions creation.
 https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-azure-function
@@ -97,7 +102,12 @@ https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account
 Note: You need to fill in the form with the below specific parameters while creating.
 
 ### On GitHub
-1. Set Secret for CI/CD
+1. **Set Secret for CI/CD**
+   1. Go to YOUR github repository of ProtectMasterBot which you forked or cloned. 
+   2. Then go to Settings > Secrets and add your Respository secrets named "AZURE_FUNCTIONAPP_PUBLISH_PROFILE"
+   3. Set your publishingProfile value of Azure Functions.
+![](./contents/hands-on/GitHub1.png)
+
 Please refer to the below link to set the secret for CI/CD
 https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
 You need to add the below secret
@@ -107,13 +117,24 @@ Secret Name|Value
 AZURE_FUNCTIONAPP_PUBLISH_PROFILE| Your downloaded publishing profile.
 
 ### Setup GitHub Apps setting.
-Finally, it's time to setup the GitHub Apps with the parameters
-Please fill in the form with the below parameter.
+It's time to setup the GitHub Apps 
 
-1. General Setting
+1. **Create your GitHub Apps**
+    1. Go to your Settings > Developer settings > GitHub Apps
+    2. Then create your GitHub App.
+    ![](./contents/hands-on/GitHubApps1.png)
+
+1. **Create your GitHub Apps**
+Please fill in the form with the below parameter.
+    1. General Settings
 
 Input|Value
 ---|---
+GitHub App name | Your App Name
+Homepage URL | Your Home page URL
+Homepage URL | Your Home page URL
+User authorization callback URL | https://<YOUR AZURE FUNCTIONS URL>.azurewebsites.net/api/ReceiveInstallation
+Webhook | active
 Webhook URL| https://<YOUR_AZURE_FUNCTIONS_NAME>.azurewebsites.net/api/ProtectMaster
 
 2. Permissions
@@ -130,8 +151,14 @@ Subscribe to events|Check
 ---|---
 Repository| true
 
-4. Download GitHub Apps' PEM key
+4. Confirm Creation
+Please memo your App ID
+![](./contents/hands-on/GitHubApps3.png)
+
+5. Generate and Download GitHub Apps' PEM key
 You will need PEM file and app ID for GitHub Apps beforehand.
+![](./contents/hands-on/GitHubApps4.png)
+
 Please refer to the below documents to get PEM file and App ID 
 https://developer.github.com/apps/building-github-apps/authenticating-with-github-apps/
 
@@ -139,12 +166,11 @@ To learn more about GitHub Apps, please check below.
 https://docs.github.com/ja/github-ae@latest/developers/apps/about-apps
 
 ### Setup Your Azure Function's Apps setting on Azure.
-4. Configure the Azure Functions
-![](./contents/hands-on/AzureFunctions5.png)
-
-Please refer to the below link for Azure Functions configuration
-https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings
+1. Configure the Azure Functions
+You are almost there!
+Finally, Go to Azure Functions > Configuration > Application settings, set the environmental variables and save the setting. 
 You need to add the environment variables below
+![](./contents/hands-on/AzureFunctions6.png)
 
 Key|Value
 ---|-----
@@ -152,7 +178,11 @@ gh_app_pem | your GitHub App's PEM string which must be encoded with Base64
 gh_app_id | GitHub Apps ID
 cosmosdb_connection_string | Your CosmosDB connection string 
 
-NOW You are ready to use the bot!
+Please refer to the below link for Azure Functions configuration
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings
+
+### Final Deployment 
+Please run your CI/CD. If deployment is successfully done, then you are ready to use the bot! 
 
 ---
 ## How to run API in your local environment
