@@ -9,9 +9,14 @@ It's very easy to use ProtectMasterBot. Please install the bot in your organizat
 Please Access **[HERE](https://github.com/apps/protectmasterbot)** to get the bot!
 
 [![](./contents/Installation.png)](https://github.com/apps/protectmasterbot)
+
 ## How to use
 
 ![](./contents/HowToUse.png)
+
+### Demo on YouTube
+[![Demo](https://img.youtube.com/vi/B-awzLYdVY0/0.jpg)](https://www.youtube.com/watch?v=B-awzLYdVY0)
+
 
 ---
 ## Architecture and process

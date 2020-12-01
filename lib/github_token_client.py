@@ -47,9 +47,9 @@ class GitHubTokenClient:
         except requests.exceptions.RequestException:
             logging.error("RequestException while getting installation info.")
         except KeyError:
-            logging.error("KeyError occured while getting installation info.")
+            logging.error("KeyError occurred while getting installation info.")
         except TypeError:
-            logging.error("TypeError occured while getting installation info.")
+            logging.error("TypeError occurred while getting installation info.")
         except Exception as e:
             logging.error(e)
         return org
